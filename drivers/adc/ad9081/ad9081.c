@@ -1541,8 +1541,8 @@ int32_t ad9081_init(struct ad9081_phy **dev,
 			},
 			.invert_mask = 0x00,
 			.lane_mapping = {
-				{ 0, 1, 2, 3, 4, 5, 6, 7 },
-				{ 7, 7, 7, 7, 7, 7, 7, 7 }
+				{ 0, 0, 0, 0, 0, 0, 0, 0 },
+				{ 0, 0, 0, 0, 0, 0, 0, 0 }
 			}, /* link0, link1 */
 		},
 		.des_settings = { /* txfe jrx */
@@ -1550,8 +1550,8 @@ int32_t ad9081_init(struct ad9081_phy **dev,
 			.invert_mask = 0x00,
 			.ctle_filter = { 2, 2, 2, 2, 2, 2, 2, 2 },
 			.lane_mapping =  {
-				{ 0, 1, 2, 3, 4, 5, 6, 7 },
-				{ 0, 1, 2, 3, 4, 5, 6, 7 }
+				{ 0, 0, 0, 0, 0, 0, 0, 0 },
+				{ 0, 0, 0, 0, 0, 0, 0, 0 }
 			}, /* link0, link1 */
 		}
 	};
