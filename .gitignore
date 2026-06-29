@@ -19,7 +19,6 @@ projects/*/build_*
 dfp_drivers
 aducm_project
 aducm_build
-.vscode
 .Xil
 .github/CODEOWNERS
 .github/PULL_REQUEST_TEMPLATE.md
