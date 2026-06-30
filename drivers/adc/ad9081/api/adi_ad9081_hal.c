@@ -1121,6 +1121,8 @@ int32_t adi_ad9081_hal_multi_bf_set(adi_ad9081_device_t *device, uint32_t reg,
 			}
 			mask = (1 << width) - 1;
 			data8 = data8 & (~(mask << offset));
+			fprintf(dsi_log_fp, "   mask%d  =0x%02x\n", i, (mask << offset));
+
 			data8 = data8 | ((*(value + i) & mask) << offset);
 		} else {
 			/* Use non-multi bf set */

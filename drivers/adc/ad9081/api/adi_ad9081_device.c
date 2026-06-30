@@ -15,6 +15,7 @@
 /*============= I N C L U D E S ============*/
 #include "adi_ad9081_config.h"
 #include "adi_ad9081_hal.h"
+#include "dsi_app_log.h"
 
 #define DEFAULT_DAC_FULLSCALE_CURRENT 26000 /*26mA*/
 /*============= C O D E ====================*/
@@ -30,6 +31,7 @@ int32_t adi_ad9081_device_boot_pre_clock(adi_ad9081_device_t *device)
 		err = adi_ad9081_hal_reg_get(device, 0x3742,
 					     &core_status); /* @msg2 */
 		AD9081_ERROR_RETURN(err);
+		fprintf(dsi_log_fp, "   check >=0x71\n");
 		if (core_status <
 		    0x71) { /* (0x71) boot_powerup_enable_clocks_done_msg */
 			err = adi_ad9081_hal_delay_us(device, 1000);
@@ -154,12 +156,13 @@ int32_t adi_ad9081_device_boot_post_clock(adi_ad9081_device_t *device)
 		    device, REG_UP_CTRL_ADDR, BF_UP_SPI_EDGE_INTERRUPT_INFO),
 	    err != API_CMS_ERROR_OK)
 		AD9081_LOG_ERR("up_spi_edge_interrupt bit never cleared");
-
+	fprintf(dsi_log_fp, "   check  =0x00\n");
 	/* check boot_done */
 	for (i = 0; i < 100; i++) {
 		err = adi_ad9081_hal_bf_get(device, 0x3740, 0x0100, &boot_done,
 					    1); /* boot_done@msg0 */
 		AD9081_ERROR_RETURN(err);
+		fprintf(dsi_log_fp, "   check  =0x01\n");
 		if (boot_done == 0) {
 			err = adi_ad9081_hal_delay_us(device, 1000);
 			AD9081_ERROR_RETURN(err);
@@ -171,6 +174,8 @@ int32_t adi_ad9081_device_boot_post_clock(adi_ad9081_device_t *device)
 	/* check core status */
 	err = adi_ad9081_hal_reg_get(device, 0x3742, &core_status); /* @msg2 */
 	AD9081_ERROR_RETURN(err);
+	fprintf(dsi_log_fp, "   check >=0xf0\n");
+
 	if (core_status < 0xF0) {
 		AD9081_LOG_ERR(
 			"Boot did not reach spot where it waits for application code");
@@ -180,6 +185,7 @@ int32_t adi_ad9081_device_boot_post_clock(adi_ad9081_device_t *device)
 	err = adi_ad9081_hal_bf_get(device, 0x3740, 0x0103, &clk_switch_done,
 				    1); /* @msg0 */
 	AD9081_ERROR_RETURN(err);
+	fprintf(dsi_log_fp, "   check  =0x08\n");
 	if (clk_switch_done == 0x0) {
 		AD9081_LOG_ERR("Clock switch not done");
 		AD9081_ERROR_RETURN(API_CMS_ERROR_INIT_SEQ_FAIL);
@@ -285,6 +291,7 @@ int32_t adi_ad9081_device_clk_pll_lock_status_get(adi_ad9081_device_t *device,
 	err = adi_ad9081_hal_reg_get(device, REG_CLK_PLL_STATUS_ADDR, status);
 	AD9081_ERROR_RETURN(err);
 	*status = *status & 0x03;
+	fprintf(dsi_log_fp, "   bitmask=0x03\n");
 
 	return API_CMS_ERROR_OK;
 }
@@ -394,8 +401,11 @@ int32_t adi_ad9081_device_clk_pll_div_set(adi_ad9081_device_t *device,
 		err = adi_ad9081_device_clk_pll_lock_status_get(device,
 								&pll_lock);
 		AD9081_ERROR_RETURN(err);
+		 
+		fprintf(dsi_log_fp, "   check  =0x03\n");
 		if (pll_lock == 0x3)
 			break;
+
 	}
 	if (pll_lock != 0x3) {
 		AD9081_ERROR_REPORT(API_CMS_ERROR_PLL_NOT_LOCKED, pll_lock,
@@ -760,6 +770,8 @@ int32_t adi_ad9081_device_power_status_check(adi_ad9081_device_t *device)
 	AD9081_ERROR_RETURN(err);
 	power_on &= (regs8[0] & regs8[1] & regs8[2] & regs8[3] & regs8[4] &
 		     regs8[5]);
+	fprintf(dsi_log_fp, "   bitmask=0x3f\n");
+	fprintf(dsi_log_fp, "   check  =0x3f\n");
 	err = adi_ad9081_hal_4bf_get(device, REG_CLOCK_SUPPLY_MONITOR_ADDR,
 				     BF_DACPLLVDD_MON2_INFO, &regs8[0],
 				     BF_LS_CLOCK_MON1_INFO, &regs8[1],
@@ -767,6 +779,8 @@ int32_t adi_ad9081_device_power_status_check(adi_ad9081_device_t *device)
 				     BF_REF_UP_CLOCK_MON1_INFO, &regs8[3], 1);
 	AD9081_ERROR_RETURN(err);
 	power_on &= (regs8[0] & regs8[1] & regs8[2] & regs8[3]);
+	fprintf(dsi_log_fp, "   bitmask=0x0f\n");
+	fprintf(dsi_log_fp, "   check  =0x0f\n");
 	err = adi_ad9081_hal_5bf_get(device, REG_ADC0_SUPPLY_MONITOR_ADDR,
 				     BF_ADC0_CLK_MON1_INFO, &regs8[0],
 				     BF_ADC0_CORE_MON1_INFO, &regs8[1],
@@ -775,6 +789,8 @@ int32_t adi_ad9081_device_power_status_check(adi_ad9081_device_t *device)
 				     BF_ADC0_REF_MON2_INFO, &regs8[4], 1);
 	AD9081_ERROR_RETURN(err);
 	power_on &= (regs8[0] & regs8[1] & regs8[2] & regs8[3] & regs8[4]);
+	fprintf(dsi_log_fp, "   bitmask=0x1f\n");
+	fprintf(dsi_log_fp, "   check  =0x1f\n");
 	err = adi_ad9081_hal_5bf_get(device, REG_ADC1_SUPPLY_MONITOR_ADDR,
 				     BF_ADC1_CLK_MON1_INFO, &regs8[0],
 				     BF_ADC1_CORE_MON1_INFO, &regs8[1],
@@ -783,6 +799,8 @@ int32_t adi_ad9081_device_power_status_check(adi_ad9081_device_t *device)
 				     BF_ADC1_REF_MON2_INFO, &regs8[4], 1);
 	AD9081_ERROR_RETURN(err);
 	power_on &= (regs8[0] & regs8[1] & regs8[2] & regs8[3] & regs8[4]);
+	fprintf(dsi_log_fp, "   bitmask=0x1f\n");
+	fprintf(dsi_log_fp, "   check  =0x1f\n");
 	if (power_on == 0) {
 		err = adi_ad9081_hal_log_write(
 			device, ADI_CMS_LOG_ERR,

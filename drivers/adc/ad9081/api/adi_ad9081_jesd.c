@@ -15,6 +15,7 @@
 /*============= I N C L U D E S ============*/
 #include "adi_ad9081_config.h"
 #include "adi_ad9081_hal.h"
+#include "dsi_app_log.h"
 
 #define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
 /*============= C O D E ====================*/
@@ -2363,6 +2364,7 @@ int32_t adi_ad9081_jesd_tx_link_config_set(adi_ad9081_device_t *device,
 	/* startup jesd pll if using rx only, setupJtx()@ad9081_rx_r1.py */
 	err = adi_ad9081_jesd_pll_lock_status_get(device, &jesd_pll_locked);
 	AD9081_ERROR_RETURN(err);
+	fprintf(dsi_log_fp, "   check  =0x08\n");
 	if (jesd_pll_locked == 0) {
 		/* Determine chip mode = (rx only) */
 		chip_mode = RX_ONLY;

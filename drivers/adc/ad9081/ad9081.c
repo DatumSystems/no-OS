@@ -41,6 +41,7 @@
 #include "adi_ad9081_hal.h"
 #include "no_os_print_log.h"
 #include "ad9081.h"
+#include "dsi_app_log.h"
 
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
@@ -778,6 +779,7 @@ static int ad9081_setup(struct ad9081_phy *phy)
 		if (ret != 0)
 			return ret;
 
+		fprintf(dsi_log_fp, "   check  =0x03\n");
 		if (txfe_pll_stat != 3) {
 			pr_err("CLK PLL Failed to Lock (Status: %d)",
 			       txfe_pll_stat);
