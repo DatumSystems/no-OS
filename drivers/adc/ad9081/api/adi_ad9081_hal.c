@@ -14,6 +14,7 @@
 
 /*============= I N C L U D E S ============*/
 #include "adi_ad9081_hal.h"
+#include "dsi_app_log.h"
 
 /*============= C O D E ====================*/
 int32_t adi_ad9081_hal_hw_open(adi_ad9081_device_t *device)
@@ -114,6 +115,8 @@ int32_t adi_ad9081_hal_bf_get(adi_ad9081_device_t *device, uint32_t reg,
 				bf_val = bf_val +
 					 ((uint64_t)data8 << filled_bits);
 				filled_bits = filled_bits + width;
+				fprintf(dsi_log_fp, "   bitmask=0x%02x\n", mask << offset);
+
 			} else {
 				mask = (1 << (8 - offset)) - 1;
 				data8 = (data8 >> offset) & mask;
@@ -122,6 +125,8 @@ int32_t adi_ad9081_hal_bf_get(adi_ad9081_device_t *device, uint32_t reg,
 				width = offset + width - 8;
 				filled_bits = filled_bits + (8 - offset);
 				offset = 0;
+				fprintf(dsi_log_fp, "  xbitmask=0x%02x\n", mask << offset);
+
 			}
 		}
 	} else { /* access extended space */
@@ -135,6 +140,7 @@ int32_t adi_ad9081_hal_bf_get(adi_ad9081_device_t *device, uint32_t reg,
 				bf_val = bf_val +
 					 ((uint64_t)data32 << filled_bits);
 				filled_bits = filled_bits + width;
+				fprintf(dsi_log_fp, "   bitmask=0x%02x\n", mask << offset);
 			} else {
 				mask = ((uint64_t)1 << (32 - offset)) - 1;
 				data32 = (data32 >> offset) & mask;
@@ -143,6 +149,7 @@ int32_t adi_ad9081_hal_bf_get(adi_ad9081_device_t *device, uint32_t reg,
 				width = offset + width - 32;
 				filled_bits = filled_bits + (32 - offset);
 				offset = 0;
+				fprintf(dsi_log_fp, "  xbitmask=0x%02x\n", mask << offset);
 			}
 		}
 	}
@@ -199,6 +206,7 @@ int32_t adi_ad9081_hal_bf_set(adi_ad9081_device_t *device, uint32_t reg,
 			}
 			err = adi_ad9081_hal_reg_set(device, reg + reg_offset,
 						     data8);
+			fprintf(dsi_log_fp, "   bitmask=0x%02x\n", mask << offset);
 			AD9081_ERROR_RETURN(err);
 		}
 	} else { /* access extended space */
