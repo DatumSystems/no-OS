@@ -826,6 +826,7 @@ int32_t adi_ad9081_device_reg8_access_check(adi_ad9081_device_t *device)
 	err = adi_ad9081_hal_reg_get(device, REG_PAGEINDX_DAC_CHAN_ADDR,
 				     &data8);
 	AD9081_ERROR_RETURN(err);
+	fprintf(dsi_log_fp, "   check  =0x5a\n");
 	if (data8 != 0x5a) {
 		err = adi_ad9081_hal_log_write(
 			device, ADI_CMS_LOG_ERR,
@@ -839,6 +840,7 @@ int32_t adi_ad9081_device_reg8_access_check(adi_ad9081_device_t *device)
 	err = adi_ad9081_hal_reg_get(device, REG_PAGEINDX_DAC_CHAN_ADDR,
 				     &data8);
 	AD9081_ERROR_RETURN(err);
+	fprintf(dsi_log_fp, "   check  =0xa5\n");
 	if (data8 != 0xa5) {
 		err = adi_ad9081_hal_log_write(
 			device, ADI_CMS_LOG_ERR,

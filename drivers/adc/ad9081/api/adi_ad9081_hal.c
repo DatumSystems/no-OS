@@ -1092,6 +1092,7 @@ int32_t adi_ad9081_hal_multi_bf_set(adi_ad9081_device_t *device, uint32_t reg,
 {
 	int32_t err;
 	uint32_t mask = 0;
+	uint32_t logged_mask = 0;
 	uint8_t data8 = 0, offset = 0, width = 0;
 	uint8_t i = 0, reg_bytes = 0, reg_read_reqd = 1;
 	AD9081_NULL_POINTER_RETURN(device);
@@ -1120,9 +1121,8 @@ int32_t adi_ad9081_hal_multi_bf_set(adi_ad9081_device_t *device, uint32_t reg,
 				AD9081_ERROR_RETURN(err);
 			}
 			mask = (1 << width) - 1;
+			logged_mask |=(mask << offset);
 			data8 = data8 & (~(mask << offset));
-			fprintf(dsi_log_fp, "   mask%d  =0x%02x\n", i, (mask << offset));
-
 			data8 = data8 | ((*(value + i) & mask) << offset);
 		} else {
 			/* Use non-multi bf set */
@@ -1136,6 +1136,7 @@ int32_t adi_ad9081_hal_multi_bf_set(adi_ad9081_device_t *device, uint32_t reg,
 
 	if (reg_read_reqd == 0) {
 		err = adi_ad9081_hal_reg_set(device, reg, data8);
+		fprintf(dsi_log_fp, "   bitmask=0x%02x\n", logged_mask);
 		AD9081_ERROR_RETURN(err);
 	}
 
