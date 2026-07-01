@@ -115,7 +115,8 @@ int32_t adi_ad9081_hal_bf_get(adi_ad9081_device_t *device, uint32_t reg,
 				bf_val = bf_val +
 					 ((uint64_t)data8 << filled_bits);
 				filled_bits = filled_bits + width;
-				fprintf(dsi_log_fp, "   bitmask=0x%02x\n", mask << offset);
+				if(((mask << offset) & 0x00ff) != 0xff)
+					fprintf(dsi_log_fp, "   bitmask=0x%02x\n", mask << offset);
 
 			} else {
 				mask = (1 << (8 - offset)) - 1;
@@ -124,8 +125,9 @@ int32_t adi_ad9081_hal_bf_get(adi_ad9081_device_t *device, uint32_t reg,
 					 ((uint64_t)data8 << filled_bits);
 				width = offset + width - 8;
 				filled_bits = filled_bits + (8 - offset);
+				if(((mask << offset) & 0x00ff) != 0xff)
+					fprintf(dsi_log_fp, "  xbitmask=0x%02x\n", mask << offset);
 				offset = 0;
-				fprintf(dsi_log_fp, "  xbitmask=0x%02x\n", mask << offset);
 
 			}
 		}
@@ -140,7 +142,7 @@ int32_t adi_ad9081_hal_bf_get(adi_ad9081_device_t *device, uint32_t reg,
 				bf_val = bf_val +
 					 ((uint64_t)data32 << filled_bits);
 				filled_bits = filled_bits + width;
-				fprintf(dsi_log_fp, "   bitmask=0x%02x\n", mask << offset);
+				fprintf(dsi_log_fp, "   xbitmask=0x%08x\n", mask << offset);
 			} else {
 				mask = ((uint64_t)1 << (32 - offset)) - 1;
 				data32 = (data32 >> offset) & mask;
@@ -148,8 +150,8 @@ int32_t adi_ad9081_hal_bf_get(adi_ad9081_device_t *device, uint32_t reg,
 					 ((uint64_t)data32 << filled_bits);
 				width = offset + width - 32;
 				filled_bits = filled_bits + (32 - offset);
+				fprintf(dsi_log_fp, "   xbitmask=0x%08x\n", mask << offset);
 				offset = 0;
-				fprintf(dsi_log_fp, "  xbitmask=0x%02x\n", mask << offset);
 			}
 		}
 	}
@@ -182,6 +184,7 @@ int32_t adi_ad9081_hal_bf_set(adi_ad9081_device_t *device, uint32_t reg,
 		for (reg_offset = 0; reg_offset < reg_bytes; reg_offset++) {
 			if ((offset + width) <= 8) { /* last 8bits */
 				if ((offset > 0) || ((offset + width) < 8)) {
+					fprintf(dsi_log_fp, "RMW\n");
 					err = adi_ad9081_hal_reg_get(
 						device, reg + reg_offset,
 						&data8);
@@ -237,6 +240,7 @@ int32_t adi_ad9081_hal_bf_set(adi_ad9081_device_t *device, uint32_t reg,
 			}
 			err = adi_ad9081_hal_reg_set(device, reg + reg_offset,
 						     data32);
+			fprintf(dsi_log_fp, "   xbitmask=0x%08x\n", mask << offset);
 			AD9081_ERROR_RETURN(err);
 		}
 	}
@@ -1116,6 +1120,7 @@ int32_t adi_ad9081_hal_multi_bf_set(adi_ad9081_device_t *device, uint32_t reg,
 			if ((reg_read_reqd == 1) &&
 			    ((offset > 0) || ((offset + width) < 8))) {
 				reg_read_reqd = 0;
+				fprintf(dsi_log_fp, "RMW\n");
 				err = adi_ad9081_hal_reg_get(device, reg,
 							     &data8);
 				AD9081_ERROR_RETURN(err);

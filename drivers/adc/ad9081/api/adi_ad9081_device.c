@@ -162,11 +162,11 @@ int32_t adi_ad9081_device_boot_post_clock(adi_ad9081_device_t *device)
 		err = adi_ad9081_hal_bf_get(device, 0x3740, 0x0100, &boot_done,
 					    1); /* boot_done@msg0 */
 		AD9081_ERROR_RETURN(err);
-		fprintf(dsi_log_fp, "   check  =0x01\n");
 		if (boot_done == 0) {
 			err = adi_ad9081_hal_delay_us(device, 1000);
 			AD9081_ERROR_RETURN(err);
 		} else {
+			fprintf(dsi_log_fp, "   check  =0x01\n");
 			break;
 		}
 	}
