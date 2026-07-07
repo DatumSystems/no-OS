@@ -1255,7 +1255,7 @@ static int ad9081_jesd204_link_init(struct jesd204_dev *jdev,
 	return JESD204_STATE_CHANGE_DONE;
 }
 
-static int ad9081_jesd204_setup_stage1(struct jesd204_dev *jdev,
+int ad9081_jesd204_setup_stage1(struct jesd204_dev *jdev,
 				       enum jesd204_state_op_reason reason)
 {
 	struct ad9081_jesd204_priv *priv = jesd204_dev_priv(jdev);
@@ -1325,7 +1325,7 @@ static int ad9081_jesd204_setup_stage1(struct jesd204_dev *jdev,
 }
 
 
-static int ad9081_jesd204_setup_stage2(struct jesd204_dev *jdev,
+int ad9081_jesd204_setup_stage2(struct jesd204_dev *jdev,
 				       enum jesd204_state_op_reason reason)
 {
 	struct ad9081_jesd204_priv *priv = jesd204_dev_priv(jdev);
@@ -1367,7 +1367,7 @@ static int ad9081_jesd204_setup_stage2(struct jesd204_dev *jdev,
 	return JESD204_STATE_CHANGE_DONE;
 }
 
-static int ad9081_jesd204_setup_stage3(struct jesd204_dev *jdev,
+int ad9081_jesd204_setup_stage3(struct jesd204_dev *jdev,
 				       enum jesd204_state_op_reason reason)
 {
 	struct ad9081_jesd204_priv *priv = jesd204_dev_priv(jdev);
