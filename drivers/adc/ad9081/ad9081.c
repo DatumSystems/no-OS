@@ -1046,7 +1046,7 @@ int32_t ad9081_parse_init_param(struct ad9081_phy *phy,
 	return 0;
 }
 
-static int ad9081_jesd204_clks_enable(struct jesd204_dev *jdev,
+int ad9081_jesd204_clks_enable(struct jesd204_dev *jdev,
 				      enum jesd204_state_op_reason reason,
 				      struct jesd204_link *lnk)
 {
@@ -1113,7 +1113,7 @@ static int ad9081_jesd204_clks_enable(struct jesd204_dev *jdev,
 	return JESD204_STATE_CHANGE_DONE;
 }
 
-static int ad9081_jesd204_link_enable(struct jesd204_dev *jdev,
+int ad9081_jesd204_link_enable(struct jesd204_dev *jdev,
 				      enum jesd204_state_op_reason reason,
 				      struct jesd204_link *lnk)
 {
