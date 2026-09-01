@@ -406,7 +406,7 @@ static int32_t ad9081_jesd_rx_link_status_print(struct ad9081_phy *phy,
 				ret = -EIO;
 
 			if (ret == 0 || retry == 0)
-				pr_info("JESD TX (JRX) Link%d 204C status: %s (%d)\n",
+				printf("JESD TX (JRX) Link%d 204C status: %s (%d)\n",
 					lnk->link_id, ad9081_jrx_204c_states[stat & 0x7],
 					stat);
 			else
@@ -422,7 +422,7 @@ static int32_t ad9081_jesd_rx_link_status_print(struct ad9081_phy *phy,
 				ret = -EIO;
 
 			if (ret == 0 || retry == 0)
-				pr_info("JESD TX (JRX) Link%d 0x%X lanes in DATA\n",
+				printf("JESD TX (JRX) Link%d 0x%X lanes in DATA\n",
 					lnk->link_id, stat);
 			else
 				no_os_mdelay(20);
@@ -1055,7 +1055,7 @@ int ad9081_jesd204_clks_enable(struct jesd204_dev *jdev,
 	uint8_t jesd_pll_status;
 	int ret;
 
-	pr_debug("%s:%d link_num %u reason %s\n", __func__, __LINE__,
+	printf("%s:%d link_num %u reason %s\n", __func__, __LINE__,
 		 lnk->link_id, jesd204_state_op_reason_str(reason));
 
 
@@ -1084,7 +1084,7 @@ int ad9081_jesd204_clks_enable(struct jesd204_dev *jdev,
 			if (ret != 0)
 				return ret;
 
-			pr_info("running jesd_rx_calibrate_204c, LR %lu kbps\n",
+			printf("running jesd_rx_calibrate_204c, LR %lu kbps\n",
 				phy->jrx_link_tx[0].lane_rate_kbps);
 
 			ret = adi_ad9081_jesd_rx_calibrate_204c(&phy->ad9081, 1, 0, 1);
@@ -1121,7 +1121,7 @@ int ad9081_jesd204_link_enable(struct jesd204_dev *jdev,
 	struct ad9081_phy *phy = priv->phy;
 	int ret;
 
-	pr_debug("%s:%d link_num %u reason %s\n", __func__, __LINE__, lnk->link_id,
+	printf("%s:%d link_num %u reason %s\n", __func__, __LINE__, lnk->link_id,
 		 jesd204_state_op_reason_str(reason));
 
 	if (lnk->is_transmit) {
@@ -1136,7 +1136,7 @@ int ad9081_jesd204_link_enable(struct jesd204_dev *jdev,
 	return JESD204_STATE_CHANGE_DONE;
 }
 
-static int ad9081_jesd204_link_running(struct jesd204_dev *jdev,
+int ad9081_jesd204_link_running(struct jesd204_dev *jdev,
 				       enum jesd204_state_op_reason reason,
 				       struct jesd204_link *lnk)
 {
@@ -1144,7 +1144,7 @@ static int ad9081_jesd204_link_running(struct jesd204_dev *jdev,
 	struct ad9081_phy *phy = priv->phy;
 	int ret;
 
-	pr_debug("%s:%d link_num %u reason %s\n", __func__, __LINE__,
+	printf("%s:%d link_num %u reason %s\n", __func__, __LINE__,
 		 lnk->link_id, jesd204_state_op_reason_str(reason));
 
 	if (reason != JESD204_STATE_OP_REASON_INIT) {
@@ -1187,13 +1187,13 @@ int ad9081_jesd204_uninit(struct jesd204_dev *jdev,
 	if (reason != JESD204_STATE_OP_REASON_UNINIT)
 		return JESD204_STATE_CHANGE_DONE;
 
-	pr_debug("%s:%d reason %s\n", __func__, __LINE__,
+	printf("%s:%d reason %s\n", __func__, __LINE__,
 		 jesd204_state_op_reason_str(reason));
 
 	return JESD204_STATE_CHANGE_DONE;
 }
 
-static int ad9081_jesd204_link_init(struct jesd204_dev *jdev,
+int ad9081_jesd204_link_init(struct jesd204_dev *jdev,
 				    enum jesd204_state_op_reason reason,
 				    struct jesd204_link *lnk)
 {
@@ -1209,7 +1209,7 @@ static int ad9081_jesd204_link_init(struct jesd204_dev *jdev,
 		return JESD204_STATE_CHANGE_DONE;
 	}
 
-	pr_debug("%s:%d link_num %u reason %s\n", __func__, __LINE__, lnk->link_id,
+	printf("%s:%d link_num %u reason %s\n", __func__, __LINE__, lnk->link_id,
 		 jesd204_state_op_reason_str(reason));
 
 	switch (lnk->link_id) {
@@ -1270,7 +1270,7 @@ int ad9081_jesd204_setup_stage1(struct jesd204_dev *jdev,
 		return JESD204_STATE_CHANGE_DONE;
 	}
 
-	pr_debug("%s:%d reason %s\n", __func__, __LINE__,
+	printf("%s:%d reason %s\n", __func__, __LINE__,
 		 jesd204_state_op_reason_str(reason));
 
 	ret = ad9081_jesd_tx_link_dig_reset(&phy->ad9081, 0);
@@ -1337,7 +1337,7 @@ int ad9081_jesd204_setup_stage2(struct jesd204_dev *jdev,
 	if (reason != JESD204_STATE_OP_REASON_INIT)
 		return JESD204_STATE_CHANGE_DONE;
 
-	pr_debug("%s:%d reason %s\n", __func__, __LINE__,
+	printf("%s:%d reason %s\n", __func__, __LINE__,
 		 jesd204_state_op_reason_str(reason));
 
 	/* NCO Sync */
@@ -1377,7 +1377,7 @@ int ad9081_jesd204_setup_stage3(struct jesd204_dev *jdev,
 	if (reason != JESD204_STATE_OP_REASON_INIT)
 		return JESD204_STATE_CHANGE_DONE;
 
-	pr_debug("%s:%d reason %s\n", __func__, __LINE__,
+	printf("%s:%d reason %s\n", __func__, __LINE__,
 		 jesd204_state_op_reason_str(reason));
 
 	ret = adi_ad9081_device_nco_sync_post(&phy->ad9081);
